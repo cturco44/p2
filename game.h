@@ -13,6 +13,7 @@
 #include "players.h"
 #include <queue>
 #include <string>
+
 class ZombieLess {
 public:
     bool operator()(const Zombie* lhs, const Zombie* rhs) const;
@@ -30,11 +31,15 @@ public:
         statistics = statistics_in;
         statistic_num = statistics_num_in;
     }
-    void add_named_zombie(std::string &name, int distance, int speed, unsigned int health);
+    void add_named_zombie(std::string &name, int distance, int speed, unsigned int health, unsigned int round);
+    void add_random_zombie(unsigned int round);
+    void add_iterator(unsigned int round);
     
 private:
+    Human fighter;
     std::deque<Zombie> all_zombies;
     std::priority_queue<Zombie*, std::vector<Zombie*>, ZombieLess> zombie_pq;
+    std::vector<std::pair<unsigned int, std::deque<Zombie>::iterator> > round_starts;
     
     bool verbose;
     bool median;

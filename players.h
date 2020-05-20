@@ -24,8 +24,9 @@ private:
 
 class Zombie {
 public:
-    Zombie(std::string &name_in, int distance_in, int speed_in, unsigned int health_in)
-    : name(name_in), distance(distance_in), speed(speed_in), health(health_in) {}
+    Zombie(std::string &name_in, int distance_in, int speed_in, unsigned int health_in, unsigned int round)
+    : name(name_in), distance(distance_in), speed(speed_in), health(health_in),
+    round_created(round) {}
 
     void set_name(std::string name_in) {
         name = name_in;
