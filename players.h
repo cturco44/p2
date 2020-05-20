@@ -15,6 +15,28 @@
 
 class Human {
 public:
+    Human() : arrows(0), quiver_capacity(0), alive(true) {}
+    unsigned int get_arrows() {
+        return arrows;
+    }
+    unsigned int get_quiver_capacity() {
+        return quiver_capacity;
+    }
+    bool get_alive() {
+        return alive;
+    }
+    void set_arrows(unsigned int arrows_in) {
+        arrows = arrows_in;
+    }
+    void set_quiver_capacity(unsigned int quiver_in) {
+        quiver_capacity = quiver_in;
+    }
+    void set_alive(bool alive_in) {
+        alive = alive_in;
+    }
+    void reload() {
+        arrows = quiver_capacity;
+    }
     
 private:
     unsigned int arrows;
@@ -54,6 +76,9 @@ public:
     }
     const std::string& get_name() const {
         return name;
+    }
+    void move() {
+        distance = std::max(0, distance - speed);
     }
     
 private:

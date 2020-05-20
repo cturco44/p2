@@ -21,6 +21,7 @@ public:
 
 class Game {
 public:
+    Game() : round(1), ate_you(nullptr) {}
     void set_verbose(bool verbose_in) {
         verbose = verbose_in;
     }
@@ -31,6 +32,13 @@ public:
         statistics = statistics_in;
         statistic_num = statistics_num_in;
     }
+    Zombie* get_top_pq() {
+        return zombie_pq.top();
+    }
+    void set_human(unsigned int quiver_capacity) {
+        fighter.set_quiver_capacity(quiver_capacity);
+    }
+    bool do_round();
     void add_named_zombie(std::string &name, int distance, int speed, unsigned int health, unsigned int round);
     void add_random_zombie(unsigned int round);
     void add_iterator(unsigned int round);
@@ -40,12 +48,16 @@ private:
     std::deque<Zombie> all_zombies;
     std::priority_queue<Zombie*, std::vector<Zombie*>, ZombieLess> zombie_pq;
     std::vector<std::pair<unsigned int, std::deque<Zombie>::iterator> > round_starts;
-    
+    Zombie *ate_you;
     bool verbose;
     bool median;
     bool statistics;
     unsigned int statistic_num;
     unsigned int round;
+    
+    bool it_one_round(std::deque<Zombie>::iterator &start, std::deque<Zombie>::iterator &end, unsigned int round);
+    void up_to_round(std::deque<Zombie>::iterator &end, unsigned int round);
+    void print_zombie(const Zombie &zombie_in) const;
     
 };
 

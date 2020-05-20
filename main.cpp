@@ -59,6 +59,7 @@ void read_in(Game &main_game) {
     //get quiver
     unsigned int quiver_capacity;
     cin >> line >> quiver_capacity;
+    main_game.set_human(quiver_capacity);
     //get seed
     unsigned int seed;
     cin >> line >> seed;
@@ -113,6 +114,9 @@ int main(int argc, char * argv[]) {
     Game main_game;
     read_args(argc, argv, main_game);
     read_in(main_game);
+    
+    Zombie* ptr = main_game.get_top_pq();
+    cout << ptr->get_name() << endl;
     
     
     
