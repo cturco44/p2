@@ -93,9 +93,12 @@ bool Game::it_one_round(std::deque<Zombie>::iterator &start,
     for(auto it2 = round_starts.begin(); it2 != round_starts.end(); ++it2) {
         if(it2->first == round) {
             start = it2->second;
-            end = (++it2)->second;
-            if(end == round_starts.end()->second) {
+            auto holder = it2 + 1;
+            if(holder == round_starts.end()) {
                 end = all_zombies.end();
+            }
+            else {
+                end = holder->second;
             }
             return true;
         }
