@@ -40,7 +40,7 @@ void circular::print() {
     }
     cout << "Last zombies killed:\n";
     if(lastn.empty()) {
-        for(unsigned long i = firstn.size() - 1; i >= 0; --i) {
+        for(int i = (int)firstn.size() - 1; i >= 0; --i) {
             cout << firstn[i]->get_name() << " " << i + 1 << "\n";
         }
         return;
