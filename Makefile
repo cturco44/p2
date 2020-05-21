@@ -288,7 +288,7 @@ help:
 # % g++ -MM *.cpp
 #
 # ADD YOUR OWN DEPENDENCIES HERE
-
+zombbb.o: main.cpp game.h game.cpp players.h player.cpp
 ######################
 # TODO (end) #
 ######################
