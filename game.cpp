@@ -92,7 +92,7 @@ bool Game::it_one_round(std::deque<Zombie>::iterator &start,
             start = it2->second;
             end = (++it2)->second;
             if(end == round_starts.end()->second) {
-                end = (--round_starts.end())->second;
+                end = all_zombies.end();
             }
             return true;
         }
