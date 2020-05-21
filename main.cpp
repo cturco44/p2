@@ -103,6 +103,7 @@ bool read_and_run_round(Game &main_game) {
     }
     //there are no zombies left and no more will be added
     else {
+        main_game.set_victory_to_win();
         return false;
     }
 

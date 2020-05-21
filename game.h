@@ -42,6 +42,9 @@ public:
     unsigned int get_round() const {
         return round;
     }
+    void set_victory_to_win() {
+        victory = true;
+    }
     void set_verbose(bool verbose_in) {
         verbose = verbose_in;
     }

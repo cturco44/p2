@@ -35,8 +35,8 @@ void Game::create_zombies() {
 }
 void Game::print_victory_loss() {
     if(victory) {
-        cout << "VICTORY IN ROUND " << round << "! "
-        << ate_you->get_name() << "was the last zombie.\n";
+        cout << "VICTORY IN ROUND " << round - 1 << "! "
+        << ate_you->get_name() << " was the last zombie.\n";
     }
     else {
         cout << "DEFEAT IN ROUND " << round << "! " << ate_you->get_name()
@@ -145,15 +145,16 @@ bool Game::do_round(int next_gen) {
     //Zombie creation
     if(next_gen == (int)round) {
         create_zombies();
-    }
-    //Make sure no named zombies started at position 0 GAME OVER
-    if(!zombie_pq.empty()) {
-        Zombie* zom2 = zombie_pq.top();
-        if(zom2->get_distance() == 0) {
-            fighter.set_alive(false);
-            return false;
+        //Make sure no named zombies started at position 0 GAME OVER
+        if(!zombie_pq.empty()) {
+            Zombie* zom2 = zombie_pq.top();
+            if(zom2->get_distance() == 0) {
+                fighter.set_alive(false);
+                return false;
+            }
         }
     }
+
 
     
     
@@ -225,8 +226,12 @@ bool ZombieActivityMore::operator()(const Zombie* lhs, const Zombie* rhs) const 
     
 }
 void Game::print_median() {
-    cout << "At the end of round " << round << ", the median zombie lifetime is "
-    << running_median.get_median() << "\n";
+    int running_med = running_median.get_median();
+    if(running_med != 0) {
+        cout << "At the end of round " << round << ", the median zombie lifetime is "
+        << running_med << "\n";
+    }
+
 }
 void Game::print_activity() {
     
