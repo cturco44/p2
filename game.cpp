@@ -33,9 +33,12 @@ void Game::handle_live_zombies() {
     }
 }
 void Game::print_all_stats() {
-    cout << "Zombies still active: " << num_alive_zombies << "\n";
-    zombie_order.print();
-    print_activity();
+    if(statistics) {
+        cout << "Zombies still active: " << num_alive_zombies << "\n";
+        zombie_order.print();
+        print_activity();
+    }
+
 }
 
 void Game::add_named_zombie(std::string &name, int distance, int speed, unsigned int health, unsigned int round) {
