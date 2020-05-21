@@ -63,6 +63,13 @@ public:
     round_created(round) {
         killed = 0;
     }
+    
+    unsigned int get_lifespan(unsigned int current_round) const {
+        return current_round - round_created + 1;
+    }
+    int get_lifespan() const {
+          return killed - round_created + 1;
+    }
 
     void set_name(std::string name_in) {
         name = name_in;
@@ -105,18 +112,17 @@ public:
         }
         return true;
     }
-    bool alive() {
+    bool alive() const {
         if(health == 0) {
             return false;
         }
         return true;
     }
-    unsigned int get_lifespan(unsigned int current_round) {
-        return current_round - round_created + 1;
-    }
-    
-    unsigned int get_killed() {
+    unsigned int get_killed() const {
         return killed;
+    }
+    void set_killed(unsigned int round_killed) {
+        killed = round_killed;
     }
 private:
     std::string name;
@@ -131,6 +137,7 @@ class circular {
 public:
     void push(Zombie* z);
     void reserve(unsigned int n);
+    void print();
 private:
     std::vector<Zombie*>::iterator it;
     std::vector<Zombie*> firstn;

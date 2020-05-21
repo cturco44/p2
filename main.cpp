@@ -118,10 +118,12 @@ int main(int argc, char * argv[]) {
     while(main_game.do_round()) {
         
     }
+    main_game.handle_live_zombies();
+    main_game.print_victory_loss();
+    main_game.print_all_stats();
     
     
     
     
-    
-    return 0;
+     return 0;
 }

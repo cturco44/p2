@@ -11,9 +11,32 @@
 #include <queue>
 #include "P2random.h"
 #include <iostream>
+#include "players.h"
 
 using namespace std;
 
+void Game::print_victory_loss() {
+    if(victory) {
+        cout << "VICTORY IN ROUND " << round << "! "
+        << ate_you->get_name() << "was the last zombie.\n";
+    }
+    else {
+        cout << "DEFEAT IN ROUND " << round << "! " << ate_you->get_name()
+        << " ate your brains!\n";
+    }
+}
+void Game::handle_live_zombies() {
+    num_alive_zombies = (int)zombie_pq.size();
+    while(!zombie_pq.empty()) {
+        zombie_pq.top()->set_killed(round);
+        zombie_pq.pop();
+    }
+}
+void Game::print_all_stats() {
+    cout << "Zombies still active: " << num_alive_zombies << "\n";
+    zombie_order.print();
+    print_activity();
+}
 
 void Game::add_named_zombie(std::string &name, int distance, int speed, unsigned int health, unsigned int round) {
     Zombie zombie(name, distance, speed, health, round);
@@ -94,6 +117,7 @@ bool Game::do_round() {
         deque<Zombie>::iterator end;
         up_to_round(end);
         //moves every zombie alive
+        int changed = false;
         for(auto it = all_zombies.begin(); it != end; ++it) {
             if(it->get_health() != 0) {
                 it->move();
@@ -103,8 +127,12 @@ bool Game::do_round() {
                 }//verbose
                 //Zombie gets you
                 if(it->get_distance() == 0) {
-                    ate_you = &(*it);
-                    fighter.set_alive(false);
+                    if(changed == false) {
+                        changed = true;
+                        ate_you = &(*it);
+                        fighter.set_alive(false);
+                    }
+
                 }
             }
         }
@@ -148,10 +176,11 @@ bool Game::do_round() {
             if(verbose) {
                 cout << "Destroyed: ";
                 print_zombie(*zom);
+                zom->set_killed(round);
+                ate_you = zom;
                 if(statistics) {
                     zombie_order.push(zom);
                 }
-                
                 if(median) {
                     running_median.push(zom->get_lifespan(round));
                 }
@@ -161,12 +190,14 @@ bool Game::do_round() {
         }
 
     }
-    if(zombie_pq.empty() && !zombies_left()) {
-        return false;
-    }
     if(median) {
         print_median();
     }
+    if(zombie_pq.empty() && !zombies_left()) {
+        victory = true;
+        return false;
+    }
+
     ++round;
     return true;
 }
@@ -187,6 +218,25 @@ bool ZombieLess::operator()(const Zombie* lhs, const Zombie* rhs) const {
     }
         return lhs_eta > rhs_eta;
 }
+bool ZombieActivityLess::operator()(const Zombie* lhs, const Zombie* rhs) const {
+    int lhs_lifespan = lhs->get_lifespan();
+    int rhs_lifespan = rhs->get_lifespan();
+    if(lhs_lifespan == rhs_lifespan) {
+        return lhs->get_name() > rhs->get_name();
+    }
+    
+    return lhs_lifespan < rhs_lifespan;
+}
+bool ZombieActivityMore::operator()(const Zombie* lhs, const Zombie* rhs) const {
+    int lhs_lifespan = lhs->get_lifespan();
+    int rhs_lifespan = rhs->get_lifespan();
+    if(lhs_lifespan == rhs_lifespan) {
+        return lhs->get_name() > rhs->get_name();
+    }
+    
+    return lhs_lifespan > rhs_lifespan;
+    
+}
 bool Game::zombies_left() const {
     auto it = --round_starts.end();
     if(it->first == round) {
@@ -198,5 +248,38 @@ void Game::print_median() {
     cout << "At the end of round " << round << ", the median zombie lifetime is "
     << running_median.get_median() << "\n";
 }
-
+void Game::print_activity() {
+    
+    priority_queue<Zombie*, vector<Zombie*>, ZombieActivityLess> most_active;
+    priority_queue<Zombie*, vector<Zombie*>, ZombieActivityMore> least_active;
+    
+    deque<Zombie>::iterator end;
+    up_to_round(end);
+    for(auto it = all_zombies.begin(); it != end; ++it) {
+        Zombie* ptr = &(*it);
+        most_active.push(ptr);
+        least_active.push(ptr);
+    }
+    
+    cout << "Most active zombies:\n";
+    for(unsigned int i = 0; i < statistic_num; ++i) {
+        if(most_active.empty()) {
+            break;
+        }
+        Zombie *ptr = most_active.top();
+        cout << ptr->get_name() << " " << ptr->get_lifespan() << "\n";
+        most_active.pop();
+    }
+    
+    cout << "Least active zombies:\n";
+    for(unsigned int i = 0; i < statistic_num; ++i) {
+        
+        if(least_active.empty()) {
+            break;
+        }
+        Zombie *ptr = least_active.top();
+        cout << ptr->get_name() << " " << ptr->get_lifespan() << "\n";
+        least_active.pop();
+    }
+}
 

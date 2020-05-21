@@ -9,6 +9,9 @@
 #include "players.h"
 #include <vector>
 #include <cmath>
+#include <iostream>
+
+using namespace std;
 
 void circular::reserve(unsigned int n) {
     firstn.reserve(n);
@@ -27,6 +30,31 @@ void circular::push(Zombie* z) {
     ++it;
     if(it == lastn.end()) {
         it = lastn.begin();
+    }
+    
+}
+void circular::print() {
+    cout << "First zombies killed:\n";
+    for(unsigned int i = 0; i < firstn.size(); ++i) {
+        cout << firstn[i]->get_name() << " " << i + 1 << "\n";
+    }
+    cout << "Last zombies killed:\n";
+    if(lastn.empty()) {
+        for(unsigned long i = firstn.size() - 1; i >= 0; --i) {
+            cout << firstn[i]->get_name() << " " << i + 1 << "\n";
+        }
+        return;
+    }
+    int n = static_cast<int>(firstn.size());
+    for(int i = 0; i < n; ++i) {
+        if(it == lastn.begin()) {
+            it = --lastn.end();
+        }
+        else {
+            --it;
+        }
+        cout << (*it)->get_name() << " " << n - i << "\n";
+        
     }
     
 }

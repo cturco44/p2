@@ -35,6 +35,8 @@ public:
         verbose = false;
         statistics = false;
         median = false;
+        num_alive_zombies = 0;
+        victory = false;
     }
     void set_verbose(bool verbose_in) {
         verbose = verbose_in;
@@ -57,7 +59,9 @@ public:
     void add_named_zombie(std::string &name, int distance, int speed, unsigned int health, unsigned int round);
     void add_random_zombie(unsigned int round);
     void add_iterator(unsigned int round);
-    
+    void print_all_stats();
+    void handle_live_zombies();
+    void print_victory_loss();
 private:
     circular zombie_order;
     Median running_median;
@@ -70,8 +74,10 @@ private:
     bool verbose;
     bool median;
     bool statistics;
+    bool victory;
     unsigned int statistic_num;
     unsigned int round;
+    unsigned int num_alive_zombies;
     
     
     bool it_one_round(std::deque<Zombie>::iterator &start, std::deque<Zombie>::iterator &end, unsigned int round);
