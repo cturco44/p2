@@ -21,7 +21,10 @@ public:
 
 class Game {
 public:
-    Game() : round(1), ate_you(nullptr) {}
+    Game() {
+        round = 1;
+        ate_you = nullptr;
+    }
     void set_verbose(bool verbose_in) {
         verbose = verbose_in;
     }

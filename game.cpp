@@ -116,7 +116,7 @@ bool Game::do_round() {
     deque<Zombie>::iterator start;
     deque<Zombie>::iterator end;
     if(it_one_round(start, end, round)) {
-        for(start; start != end; ++start) {
+        for(; start != end; ++start) {
             if(verbose) {
                 cout << "Created: ";
                 print_zombie(*start);
