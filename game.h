@@ -34,6 +34,7 @@ public:
         ate_you = nullptr;
         verbose = false;
         statistics = false;
+        statistic_num = 0;
         median = false;
         num_alive_zombies = 0;
         victory = false;
