@@ -46,17 +46,19 @@ void Game::add_iterator(unsigned int round) {
     
 }
 //Could be wrong
-void Game::up_to_round(std::deque<Zombie>::iterator &end, unsigned int round) {
+void Game::up_to_round(std::deque<Zombie>::iterator &end) {
     for(auto it = round_starts.begin(); it != round_starts.end(); ++it) {
+        
+        if(it->first > round) {
+            end = it->second;
+            return;
+        }
         //if it reaches end, use entire vector of zombies
         if(it == --round_starts.end()) {
             end = all_zombies.end();
             return;
         }
-        else if(it->first > round) {
-            end = it->second;
-            return;
-        }
+
     }
 }
 bool Game::it_one_round(std::deque<Zombie>::iterator &start,
@@ -85,13 +87,11 @@ bool Game::do_round() {
     
     //refill bow
     fighter.reload();
-    
-    int previous_round = static_cast<int>(round);
-    --previous_round;
+
     //if round is 1 do nothing, zombies in correct position
     if(round > 1) {
         deque<Zombie>::iterator end;
-        up_to_round(end, round);
+        up_to_round(end);
         //moves every zombie alive
         for(auto it = all_zombies.begin(); it != end; ++it) {
             if(it->get_health() != 0) {
@@ -129,26 +129,39 @@ bool Game::do_round() {
             
         }
     }
+    Zombie* zom2 = zombie_pq.top();
+    if(zom2->get_distance() == 0) {
+        fighter.set_alive(false);
+        return false;
+    }
+    
     
     //Step 6
+    while(fighter.get_alive() && fighter.get_arrows() != 0) {
+        Zombie* zom = zombie_pq.top();
+        zom->attacked();
+        fighter.shoot();
+        
+        //Kill zombie
+        if(!zom->alive()) {
+            if(verbose) {
+                cout << "Destroyed: ";
+                print_zombie(*zom);
+            }
+            zombie_pq.pop();
+        }
 
- 
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    }
+    if(zombie_pq.empty() && !zombies_left()) {
+        return false;
+    }
+    ++round;
     return true;
 }
 //Does not check if dead
 bool ZombieLess::operator()(const Zombie* lhs, const Zombie* rhs) const {
     int lhs_eta = lhs->get_distance()/lhs->get_speed();
-    int rhs_eta = lhs->get_distance()/lhs->get_speed();
+    int rhs_eta = rhs->get_distance()/rhs->get_speed();
     
     //Tie in ETA
     if(lhs_eta == rhs_eta) {
@@ -161,4 +174,11 @@ bool ZombieLess::operator()(const Zombie* lhs, const Zombie* rhs) const {
         return lhs_health > rhs_health;
     }
         return lhs_eta > rhs_eta;
+}
+bool Game::zombies_left() const {
+    auto it = --round_starts.end();
+    if(it->first == round) {
+        return false;
+    }
+    return true;
 }

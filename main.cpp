@@ -114,10 +114,10 @@ int main(int argc, char * argv[]) {
     Game main_game;
     read_args(argc, argv, main_game);
     read_in(main_game);
-    
-    Zombie* ptr = main_game.get_top_pq();
-    cout << ptr->get_name() << endl;
-    
+
+    while(main_game.do_round()) {
+        
+    }
     
     
     

@@ -37,6 +37,16 @@ public:
     void reload() {
         arrows = quiver_capacity;
     }
+    //if out return false
+    bool shoot() {
+        if(arrows > 0) {
+            --arrows;
+        }
+        if(arrows == 0) {
+            return false;
+        }
+        return true;
+    }
     
 private:
     unsigned int arrows;
@@ -80,6 +90,23 @@ public:
     void move() {
         distance = std::max(0, distance - speed);
     }
+    //if dead returns false
+    bool attacked() {
+        if(health > 0) {
+            --health;
+        }
+        if(health == 0) {
+            return false;
+        }
+        return true;
+    }
+    bool alive() {
+        if(health == 0) {
+            return false;
+        }
+        return true;
+    }
+    
     
 private:
     std::string name;

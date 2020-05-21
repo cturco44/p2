@@ -56,8 +56,9 @@ private:
     unsigned int round;
     
     bool it_one_round(std::deque<Zombie>::iterator &start, std::deque<Zombie>::iterator &end, unsigned int round);
-    void up_to_round(std::deque<Zombie>::iterator &end, unsigned int round);
+    void up_to_round(std::deque<Zombie>::iterator &end);
     void print_zombie(const Zombie &zombie_in) const;
+    bool zombies_left() const;
     
 };
 
