@@ -84,6 +84,9 @@ void Median::push(unsigned int data) {
     
 }
 unsigned int Median::get_median() {
+    if(max_heap.empty() && min_heap.empty()) {
+        return 0;
+    }
     if(max_heap.size() > min_heap.size()) {
         return max_heap.top();
     }

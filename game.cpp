@@ -14,7 +14,25 @@
 #include "players.h"
 
 using namespace std;
-
+void Game::create_zombies() {
+    string junk;
+    unsigned int random_zombies;
+    unsigned int named_zombies;
+    cin >> junk >> random_zombies >> junk >> named_zombies;
+    for(unsigned int i = 0; i < random_zombies; ++i) {
+        add_random_zombie(round);
+    }
+    
+    for(unsigned int i = 0; i < named_zombies; ++i) {
+        string name;
+        unsigned int distance;
+        unsigned int speed;
+        unsigned int health;
+        cin >> name >> junk >> distance >> junk >> speed >> junk >> health;
+        add_named_zombie(name, distance, speed, health, round);
+    }
+    
+}
 void Game::print_victory_loss() {
     if(victory) {
         cout << "VICTORY IN ROUND " << round << "! "
@@ -40,15 +58,26 @@ void Game::print_all_stats() {
     }
 
 }
-
+bool Game::zombies_left() const {
+    if(!zombie_pq.empty()) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 void Game::add_named_zombie(std::string &name, int distance, int speed, unsigned int health, unsigned int round) {
     Zombie zombie(name, distance, speed, health, round);
     
     all_zombies.push_back(zombie);
-    if(round == 1) {
-        Zombie *ptr = &all_zombies.back();
-        zombie_pq.push(ptr);
+    
+    Zombie *ptr = &all_zombies.back();
+    zombie_pq.push(ptr);
+    if(verbose) {
+        cout << "Created: ";
+        print_zombie(zombie);
     }
+    
 
     
 }
@@ -60,60 +89,25 @@ void Game::add_random_zombie(unsigned int round) {
     
     Zombie zombie(name, distance, speed, health, round);
     all_zombies.push_back(zombie);
-    if(round == 1) {
-        Zombie *ptr = &all_zombies.back();
-        zombie_pq.push(ptr);
-    }
-
-}
-void Game::add_iterator(unsigned int round) {
-    std::deque<Zombie>::iterator it = --all_zombies.end();
-    std::pair<unsigned int, std::deque<Zombie>::iterator> holder (round, it);
-    round_starts.push_back(holder);
     
-}
-//Could be wrong
-void Game::up_to_round(std::deque<Zombie>::iterator &end) {
-    for(auto it = round_starts.begin(); it != round_starts.end(); ++it) {
-        
-        if(it->first > round) {
-            end = it->second;
-            return;
-        }
-        //if it reaches end, use entire vector of zombies
-        if(it == --round_starts.end()) {
-            end = all_zombies.end();
-            return;
-        }
+    if(verbose) {
+        cout << "Created: ";
+        print_zombie(zombie);
+    }
+    
+    Zombie *ptr = &all_zombies.back();
+    zombie_pq.push(ptr);
+    
 
-    }
-}
-bool Game::it_one_round(std::deque<Zombie>::iterator &start,
-                    std::deque<Zombie>::iterator &end, unsigned int round) {
-    for(auto it2 = round_starts.begin(); it2 != round_starts.end(); ++it2) {
-        if(it2->first == round) {
-            start = it2->second;
-            auto holder = it2 + 1;
-            if(holder == round_starts.end()) {
-                end = all_zombies.end();
-            }
-            else {
-                end = holder->second;
-            }
-            return true;
-        }
-        if(it2->first > round) {
-            return false;
-        }
-    }
-    return false;
 }
 void Game::print_zombie(const Zombie &zombie_in) const {
     cout << zombie_in.get_name() << " (distance: " << zombie_in.get_distance()
     << ", speed: " << zombie_in.get_speed() << ", health: " << zombie_in.get_health()
     << ")\n";
 }
-bool Game::do_round() {
+
+//only returns false if you died, read and do round checks if you won
+bool Game::do_round(int next_gen) {
     if(verbose) {
         cout << "Round: " << round << "\n";
     } // verbose
@@ -122,12 +116,10 @@ bool Game::do_round() {
     fighter.reload();
 
     //if round is 1 do nothing, zombies in correct position
-    if(round > 1) {
-        deque<Zombie>::iterator end;
-        up_to_round(end);
+    if(!zombie_pq.empty()) {
         //moves every zombie alive
         int changed = false;
-        for(auto it = all_zombies.begin(); it != end; ++it) {
+        for(auto it = all_zombies.begin(); it != all_zombies.end(); ++it) {
             if(it->get_health() != 0) {
                 it->move();
                 if(verbose) {
@@ -146,36 +138,27 @@ bool Game::do_round() {
             }
         }
     }
-    
+    //If zombie moved and ate you GAME OVER
     if(fighter.get_alive() == false) {
         return false;
     }
     //Zombie creation
-    deque<Zombie>::iterator start;
-    deque<Zombie>::iterator end;
-    if(it_one_round(start, end, round)) {
-        for(; start != end; ++start) {
-            if(verbose) {
-                cout << "Created: ";
-                print_zombie(*start);
-            }
-            //Push to pq
-            if(round > 1) {
-                Zombie *ptr = &(*start);
-                zombie_pq.push(ptr);
-            }
-            
+    if(next_gen == (int)round) {
+        create_zombies();
+    }
+    //Make sure no named zombies started at position 0 GAME OVER
+    if(!zombie_pq.empty()) {
+        Zombie* zom2 = zombie_pq.top();
+        if(zom2->get_distance() == 0) {
+            fighter.set_alive(false);
+            return false;
         }
     }
-    Zombie* zom2 = zombie_pq.top();
-    if(zom2->get_distance() == 0) {
-        fighter.set_alive(false);
-        return false;
-    }
+
     
     
     //Step 6
-    while(fighter.get_alive() && fighter.get_arrows() != 0) {
+    while(fighter.get_alive() && fighter.get_arrows() != 0 && !zombie_pq.empty()) {
         Zombie* zom = zombie_pq.top();
         zom->attacked();
         fighter.shoot();
@@ -200,10 +183,6 @@ bool Game::do_round() {
     }
     if(median) {
         print_median();
-    }
-    if(zombie_pq.empty() && !zombies_left()) {
-        victory = true;
-        return false;
     }
 
     ++round;
@@ -245,13 +224,6 @@ bool ZombieActivityMore::operator()(const Zombie* lhs, const Zombie* rhs) const 
     return lhs_lifespan > rhs_lifespan;
     
 }
-bool Game::zombies_left() const {
-    auto it = --round_starts.end();
-    if(it->first == round) {
-        return false;
-    }
-    return true;
-}
 void Game::print_median() {
     cout << "At the end of round " << round << ", the median zombie lifetime is "
     << running_median.get_median() << "\n";
@@ -261,9 +233,7 @@ void Game::print_activity() {
     priority_queue<Zombie*, vector<Zombie*>, ZombieActivityLess> most_active;
     priority_queue<Zombie*, vector<Zombie*>, ZombieActivityMore> least_active;
     
-    deque<Zombie>::iterator end;
-    up_to_round(end);
-    for(auto it = all_zombies.begin(); it != end; ++it) {
+    for(auto it = all_zombies.begin(); it != all_zombies.end(); ++it) {
         Zombie* ptr = &(*it);
         most_active.push(ptr);
         least_active.push(ptr);

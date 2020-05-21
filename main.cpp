@@ -75,37 +75,38 @@ void read_in(Game &main_game) {
     
     P2random::initialize(seed, max_random_dist, max_random_speed, max_random_health);
     
+}
+bool read_and_run_round(Game &main_game) {
     //get triple hyphen for each round
-    while(cin >> line) {
-        bool iterator_added = false;
+    string line;
+    //more zombies need to be added
+    cin >> line;
+    if(line == "---") {
         string junk;
         unsigned int round;
-        unsigned int random_zombies;
-        unsigned int named_zombies;
-        cin >> junk >> round >> junk >> random_zombies >> junk >> named_zombies;
-        for(unsigned int i = 0; i < random_zombies; ++i) {
-            main_game.add_random_zombie(round);
-            if(i == 0) {
-                main_game.add_iterator(round);
-                iterator_added = true;
+        cin >> junk >> round;
+        while(round >= main_game.get_round()) {
+            //loops until need to add zombies or human dies
+            if(main_game.do_round(round) == false) {
+                return false;
             }
         }
-        
-        for(unsigned int i = 0; i < named_zombies; ++i) {
-            string name;
-            unsigned int distance;
-            unsigned int speed;
-            unsigned int health;
-            cin >> name >> junk >> distance >> junk >> speed >> junk >> health;
-            main_game.add_named_zombie(name, distance, speed, health, round);
-            if(!iterator_added && i == 0) {
-                main_game.add_iterator(round);
-                iterator_added = true;
+
+    }
+    //if there are no more zombies to be added but not all are killed
+    else if(main_game.zombies_left()) {
+        while (main_game.zombies_left()) {
+            if(main_game.do_round(-5) == false) {
+                return false;
             }
         }
     }
-    
-    
+    //there are no zombies left and no more will be added
+    else {
+        return false;
+    }
+
+    return true;
 }
 int main(int argc, char * argv[]) {
     std::ios_base::sync_with_stdio(false);
@@ -114,10 +115,10 @@ int main(int argc, char * argv[]) {
     Game main_game;
     read_args(argc, argv, main_game);
     read_in(main_game);
-
-    while(main_game.do_round()) {
-        
+    
+    while (read_and_run_round(main_game)) {
     }
+    
     main_game.handle_live_zombies();
     main_game.print_victory_loss();
     main_game.print_all_stats();

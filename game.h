@@ -39,6 +39,9 @@ public:
         num_alive_zombies = 0;
         victory = false;
     }
+    unsigned int get_round() const {
+        return round;
+    }
     void set_verbose(bool verbose_in) {
         verbose = verbose_in;
     }
@@ -56,20 +59,21 @@ public:
     void set_human(unsigned int quiver_capacity) {
         fighter.set_quiver_capacity(quiver_capacity);
     }
-    bool do_round();
+    bool do_round(int next_gen);
     void add_named_zombie(std::string &name, int distance, int speed, unsigned int health, unsigned int round);
     void add_random_zombie(unsigned int round);
     void add_iterator(unsigned int round);
     void print_all_stats();
     void handle_live_zombies();
     void print_victory_loss();
+    bool zombies_left() const;
+    void create_zombies();
 private:
     circular zombie_order;
     Median running_median;
     Human fighter;
     std::deque<Zombie> all_zombies;
     std::priority_queue<Zombie*, std::vector<Zombie*>, ZombieLess> zombie_pq;
-    std::vector<std::pair<unsigned int, std::deque<Zombie>::iterator> > round_starts;
     std::vector<Zombie*> order_killed;
     Zombie *ate_you;
     bool verbose;
@@ -81,12 +85,10 @@ private:
     unsigned int num_alive_zombies;
     
     
-    bool it_one_round(std::deque<Zombie>::iterator &start, std::deque<Zombie>::iterator &end, unsigned int round);
-    void up_to_round(std::deque<Zombie>::iterator &end);
     void print_zombie(const Zombie &zombie_in) const;
-    bool zombies_left() const;
     void print_median();
     void print_activity();
+    
     
 };
 

@@ -11,4 +11,3 @@ named-zombies: 3
 MarkSchlissel distance: 150 speed: 300 health: 150
 MarySueColeman distance: 150 speed: 300 health: 147
 LeeBollinger distance: 150 speed: 300 health: 133
-
