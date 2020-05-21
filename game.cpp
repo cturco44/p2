@@ -185,16 +185,15 @@ bool Game::do_round() {
             if(verbose) {
                 cout << "Destroyed: ";
                 print_zombie(*zom);
-                zom->set_killed(round);
-                ate_you = zom;
-                if(statistics) {
-                    zombie_order.push(zom);
-                }
-                if(median) {
-                    running_median.push(zom->get_lifespan(round));
-                }
-                
             }
+            if(statistics) {
+                zombie_order.push(zom);
+            }
+            if(median) {
+                running_median.push(zom->get_lifespan(round));
+            }
+            zom->set_killed(round);
+            ate_you = zom;
             zombie_pq.pop();
         }
 
