@@ -14,6 +14,7 @@
 
 using namespace std;
 
+
 void Game::add_named_zombie(std::string &name, int distance, int speed, unsigned int health, unsigned int round) {
     Zombie zombie(name, distance, speed, health, round);
     
@@ -147,6 +148,14 @@ bool Game::do_round() {
             if(verbose) {
                 cout << "Destroyed: ";
                 print_zombie(*zom);
+                if(statistics) {
+                    zombie_order.push(zom);
+                }
+                
+                if(median) {
+                    running_median.push(zom->get_lifespan(round));
+                }
+                
             }
             zombie_pq.pop();
         }
@@ -154,6 +163,9 @@ bool Game::do_round() {
     }
     if(zombie_pq.empty() && !zombies_left()) {
         return false;
+    }
+    if(median) {
+        print_median();
     }
     ++round;
     return true;
@@ -182,3 +194,9 @@ bool Game::zombies_left() const {
     }
     return true;
 }
+void Game::print_median() {
+    cout << "At the end of round " << round << ", the median zombie lifetime is "
+    << running_median.get_median() << "\n";
+}
+
+

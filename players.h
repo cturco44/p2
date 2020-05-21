@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include <string>
 #include <deque>
+#include <vector>
+#include <queue>
 
 class Human {
 public:
@@ -58,7 +60,9 @@ class Zombie {
 public:
     Zombie(std::string &name_in, int distance_in, int speed_in, unsigned int health_in, unsigned int round)
     : name(name_in), distance(distance_in), speed(speed_in), health(health_in),
-    round_created(round) {}
+    round_created(round) {
+        killed = 0;
+    }
 
     void set_name(std::string name_in) {
         name = name_in;
@@ -90,6 +94,7 @@ public:
     void move() {
         distance = std::max(0, distance - speed);
     }
+
     //if dead returns false
     bool attacked() {
         if(health > 0) {
@@ -106,15 +111,41 @@ public:
         }
         return true;
     }
+    unsigned int get_lifespan(unsigned int current_round) {
+        return current_round - round_created + 1;
+    }
     
-    
+    unsigned int get_killed() {
+        return killed;
+    }
 private:
     std::string name;
     int distance;
     int speed;
     unsigned int health;
     unsigned int round_created;
+    unsigned int killed;
     
 };
+class circular {
+public:
+    void push(Zombie* z);
+    void reserve(unsigned int n);
+private:
+    std::vector<Zombie*>::iterator it;
+    std::vector<Zombie*> firstn;
+    std::vector<Zombie*> lastn;
+    
+    
+};
+class Median {
+public:
+    void push(unsigned int data);
+    unsigned int get_median();
+private:
+    std::priority_queue<unsigned int, std::vector<unsigned int>, std::less<unsigned int> > max_heap;
+    std::priority_queue<unsigned int, std::vector<unsigned int>, std::greater<unsigned int> > min_heap;
+};
+
 
 #endif /* players_hpp */

@@ -18,12 +18,23 @@ class ZombieLess {
 public:
     bool operator()(const Zombie* lhs, const Zombie* rhs) const;
 };
+class ZombieActivityLess {
+public:
+    bool operator()(const Zombie* lhs, const Zombie* rhs) const;
+};
+class ZombieActivityMore {
+public:
+    bool operator()(const Zombie* lhs, const Zombie* rhs) const;
+};
 
 class Game {
 public:
     Game() {
         round = 1;
         ate_you = nullptr;
+        verbose = false;
+        statistics = false;
+        median = false;
     }
     void set_verbose(bool verbose_in) {
         verbose = verbose_in;
@@ -34,6 +45,7 @@ public:
     void set_statistics(bool statistics_in, unsigned int statistics_num_in) {
         statistics = statistics_in;
         statistic_num = statistics_num_in;
+        zombie_order.reserve(statistics_num_in);
     }
     Zombie* get_top_pq() {
         return zombie_pq.top();
@@ -47,6 +59,8 @@ public:
     void add_iterator(unsigned int round);
     
 private:
+    circular zombie_order;
+    Median running_median;
     Human fighter;
     std::deque<Zombie> all_zombies;
     std::priority_queue<Zombie*, std::vector<Zombie*>, ZombieLess> zombie_pq;
@@ -64,6 +78,8 @@ private:
     void up_to_round(std::deque<Zombie>::iterator &end);
     void print_zombie(const Zombie &zombie_in) const;
     bool zombies_left() const;
+    void print_median();
+    void print_activity();
     
 };
 

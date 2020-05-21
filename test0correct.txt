@@ -1,0 +1,9 @@
+Round: 1
+Created: MarkSchlissel (distance: 150, speed: 300, health: 150)
+Created: MarySueColeman (distance: 150, speed: 300, health: 147)
+Created: LeeBollinger (distance: 150, speed: 300, health: 133)
+Round: 2
+Moved: MarkSchlissel (distance: 0, speed: 300, health: 150)
+Moved: MarySueColeman (distance: 0, speed: 300, health: 147)
+Moved: LeeBollinger (distance: 0, speed: 300, health: 131)
+DEFEAT IN ROUND 2! MarkSchlissel ate your brains!

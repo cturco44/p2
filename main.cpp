@@ -26,7 +26,7 @@ void read_args(int argc, char* argv[], Game &main_game) {
         {nullptr, 0, nullptr, '\0' },
         
     };
-    while((gotopt = getopt_long(argc, argv, "vs:m:h", long_opts, &option_index)) != -1) {
+    while((gotopt = getopt_long(argc, argv, "vs:mh", long_opts, &option_index)) != -1) {
         switch(gotopt) {
             case 'v': {
                 main_game.set_verbose(true);
