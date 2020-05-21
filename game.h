@@ -48,12 +48,14 @@ private:
     std::deque<Zombie> all_zombies;
     std::priority_queue<Zombie*, std::vector<Zombie*>, ZombieLess> zombie_pq;
     std::vector<std::pair<unsigned int, std::deque<Zombie>::iterator> > round_starts;
+    std::vector<Zombie*> order_killed;
     Zombie *ate_you;
     bool verbose;
     bool median;
     bool statistics;
     unsigned int statistic_num;
     unsigned int round;
+    
     
     bool it_one_round(std::deque<Zombie>::iterator &start, std::deque<Zombie>::iterator &end, unsigned int round);
     void up_to_round(std::deque<Zombie>::iterator &end);

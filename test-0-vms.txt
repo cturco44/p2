@@ -1,0 +1,14 @@
+# Test 0, 3 way named tie, one of them will get the kill
+quiver-capacity: 2
+random-seed: 2044371
+max-rand-distance: 20
+max-rand-speed: 15
+max-rand-health: 4
+---
+round: 1
+random-zombies: 0
+named-zombies: 3
+MarkSchlissel distance: 150 speed: 300 health: 150
+MarySueColeman distance: 150 speed: 300 health: 147
+LeeBollinger distance: 150 speed: 300 health: 133
+

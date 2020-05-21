@@ -1,0 +1,11 @@
+# Test 3 human wins
+quiver-capacity: 40
+random-seed: 2079371
+max-rand-distance: 20
+max-rand-speed: 15
+max-rand-health: 1
+---
+round: 1
+random-zombies: 6
+named-zombies: 1
+LeeBollinger distance: 100 speed: 1 health: 2

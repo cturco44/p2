@@ -1,0 +1,14 @@
+# Test 2, 3 way named tie, no named zombies
+quiver-capacity: 28
+random-seed: 2044371
+max-rand-distance: 20
+max-rand-speed: 15
+max-rand-health: 4
+---
+round: 1
+random-zombies: 0
+named-zombies: 0
+---
+round: 6
+random-zombies: 20
+named-zombies: 0
