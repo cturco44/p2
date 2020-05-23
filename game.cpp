@@ -161,7 +161,8 @@ bool Game::do_round(int next_gen) {
     //Step 6
     while(fighter.get_alive() && fighter.get_arrows() != 0 && !zombie_pq.empty()) {
         Zombie* zom = zombie_pq.top();
-        unsigned int damage = fighter.shoot(zom->get_health());
+        unsigned int zom_health = zom->get_health();
+        int damage = fighter.shoot(zom_health);
         zom->attacked(damage);
         
         
