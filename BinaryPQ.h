@@ -46,6 +46,11 @@ public:
     //              'rebuilds' the heap by fixing the heap invariant.
     // Runtime: O(n)
     virtual void updatePriorities() {
+        int hpi = ((int)size() / 2);
+        for(; hpi > 0; --hpi) {
+            fixDown(hpi);
+        }
+        
         // TODO: Implement this function.
     } // updatePriorities()
 
@@ -67,7 +72,8 @@ public:
     // familiar with them, you do not need to use exceptions in this project.
     // Runtime: O(log(n))
     virtual void pop() {
-        data.erase(data.begin());
+        std::swap(getElement(1), getElement(size()));
+        data.pop_back();
         fixDown();
         
         // TODO: Implement this function.
@@ -117,25 +123,24 @@ private:
     } // getElement()
     
     void fixUp() {
-        int k = (int)this->size() - 1;
+        int k = (int)this->size();
         while(k > 1 && this->compare(getElement(k/2), getElement(k))) {
             std::swap(getElement(k), getElement(k/2));
             k /= 2;
         }
     }
-    void fixDown() {
+    void fixDown(int k = 1) {
         int heapsize = (int)this->size();
-        int k = 1;
         
         while(2 * k <= heapsize) {
             int j = 2 * k; //left child
             if(j < heapsize && this->compare(getElement(j), getElement(j + 1))) {
                 ++j;
             }
-            if(getElement(k) >= getElement(j)) {
+            if(!this->compare(getElement(k), getElement(j))) {
                 break;
             }
-            std::swap(getElement(k), getElement(j));
+            std::swap(this->getElement(k), this->getElement(j));
             k = j;
         }
     }

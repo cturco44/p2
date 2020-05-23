@@ -61,7 +61,6 @@ void testHiddenData(const string &pqType) {
     };
 
     cout << "Testing " << pqType << " with hidden data" << endl;
-
     // TODO: Add code here to actually test with the HiddenData type.
 } // testHiddenData()
 

@@ -28,6 +28,20 @@ struct HiddenDataComp {
         // parameters in the line above
     }
 };
+class IntPtrs {
+    public:
+        IntPtrs(int* ptr_in) {
+        the_ptr = ptr_in;
+        }
+        int* the_ptr;
+};
+struct IntPtrsComp {
+    bool operator()(const IntPtrs &a, const IntPtrs &b) const {
+        return a.the_ptr < b.the_ptr;
+        // TODO: Finish this functor; when you do, uncomment the
+        // parameters in the line above
+    }
+};
         
 void test_sorted_constructor() {
     vector<int> v = {25, 18, 77, 16};
@@ -96,11 +110,87 @@ void fix_up_test() {
     assert(sorted.empty());
     
 }
+        
+void test_custom_functor() {
+    vector<int> v = {25, 18, 77, 16, 88, 47, 89, 84, 272, 394, 98, 36, 2, -7};
+    BinaryPQ<int> sorted(v.begin(), v.end());
+    UnorderedFastPQ<int> correct(v.begin(), v.end());
+    
+        
+    assert(sorted.size() == 14);
+    for(size_t i = 0; i < v.size(); ++i) {
+        int sorted_top = sorted.top();
+        int correct_top = correct.top();
+        
+        assert(sorted_top == correct_top);
+        sorted.pop();
+        correct.pop();
+    }
+    assert(sorted.empty());
+}
+    void test_mess_up_queue() {
+        BinaryPQ<IntPtrs, IntPtrsComp> test;
+        UnorderedFastPQ<IntPtrs, IntPtrsComp> correct;
+        vector<int> v = {25, 18, 77, 16, 88, 47, 89, 84, 272, 394, 98, 36, 2, -7};
+        for(int i = 0; i < v.size(); ++i) {
+            int* ptr = &v[i];
+            IntPtrs itptr(ptr);
+            test.push(itptr);
+        correct.push(itptr);
+        
+        }
+        
+        assert(test.size() == 14);
+        for(int i = 0; i < 14; ++i) {
+            IntPtrs ptrtest = test.top();
+            IntPtrs ptrcorrect = correct.top();
+            assert(*(ptrtest.the_ptr) == *(ptrcorrect.the_ptr));
+            test.pop();
+            correct.pop();
+        
+        }
+
+    }
+void test_update_priorities() {
+        BinaryPQ<IntPtrs, IntPtrsComp> test;
+        UnorderedFastPQ<IntPtrs, IntPtrsComp> correct;
+        vector<int> v = {25, 18, 77, 16, 88, 47, 89, 84, 272, 394, 98, 36, 2, -7};
+        for(int i = 0; i < v.size(); ++i) {
+            int* ptr = &v[i];
+            IntPtrs itptr(ptr);
+            test.push(itptr);
+            correct.push(itptr);
+            
+            if(v[i] == 77) {
+                *(itptr.the_ptr) = 400;
+            }
+            if(v[i] == 272) {
+                *(itptr.the_ptr) = -3;
+            }
+        
+        }
+        test.updatePriorities();
+        correct.updatePriorities();
+        assert(test.size() == 14);
+        
+        for(int i = 0; i < 14; ++i) {
+            IntPtrs ptrtest = test.top();
+            IntPtrs ptrcorrect = correct.top();
+            assert(*(ptrtest.the_ptr) == *(ptrcorrect.the_ptr));
+            test.pop();
+            correct.pop();
+        
+        }
+        
+}
 int main() {
     test_sorted_constructor();
     test_sorted_push();
     test_with_struct();
     fix_up_test();
+    test_update_priorities();
+        test_custom_functor();
+        test_mess_up_queue();
     cout << "Tests Successful" << endl;
 }
 
