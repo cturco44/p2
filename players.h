@@ -40,12 +40,17 @@ public:
         arrows = quiver_capacity;
     }
     //if out return false
-    bool shoot() {
-        if(arrows > 0) {
-            --arrows;
+    unsigned int shoot(unsigned int zombie_health) {
+        if(arrows >= zombie_health) {
+            arrows -= zombie_health;
         }
-        if(arrows == 0) {
-            return false;
+        else if(arrows < zombie_health) {
+            unsigned int arrows_left = arrows;
+            arrows = 0;
+            return arrows_left;
+        }
+        else {
+            return 0;
         }
         return true;
     }
@@ -103,14 +108,14 @@ public:
     }
 
     //if dead returns false
-    bool attacked() {
-        if(health > 0) {
-            --health;
-        }
+    bool attacked(unsigned int damage) {
+        health -= damage;
         if(health == 0) {
             return false;
         }
-        return true;
+        else {
+            return true;
+        }
     }
     bool alive() const {
         if(health == 0) {
