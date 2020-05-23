@@ -14,6 +14,7 @@
 #include <deque>
 #include <vector>
 #include <queue>
+#include <iostream>
 
 class Human {
 public:
@@ -40,14 +41,16 @@ public:
         arrows = quiver_capacity;
     }
     //if out return false
-    bool shoot() {
-        if(arrows > 0) {
-            --arrows;
+    unsigned int shoot(unsigned int zombie_health) {
+        if(arrows >= zombie_health) {
+            arrows = arrows - zombie_health;
+            return zombie_health;
         }
-        if(arrows == 0) {
-            return false;
+        else {
+            unsigned int holder = arrows;
+            arrows = 0;
+            return holder;
         }
-        return true;
     }
     
 private:
@@ -103,13 +106,15 @@ public:
     }
 
     //if dead returns false
-    bool attacked() {
-        if(health > 0) {
-            --health;
+    bool attacked(unsigned int damage) {
+        
+        if(health >= damage) {
+            health = health - damage;
         }
         if(health == 0) {
             return false;
         }
+        
         return true;
     }
     bool alive() const {
