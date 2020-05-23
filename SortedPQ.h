@@ -31,8 +31,12 @@ public:
     // Runtime: O(n log n) where n is number of elements in range.
     // TODO: When you implement this function, uncomment the parameter names.
     template<typename InputIterator>
-    SortedPQ(InputIterator /*start*/, InputIterator /*end*/, COMP_FUNCTOR comp = COMP_FUNCTOR()) :
+    SortedPQ(InputIterator start, InputIterator end, COMP_FUNCTOR comp = COMP_FUNCTOR()) :
         BaseClass{ comp } {
+            for(InputIterator it = start; it != end; ++it) {
+                data.push_back(*it);
+            }
+            std::sort(data.begin(), data.end(), this->compare);
         // TODO: Implement this function
     } // SortedPQ
 
@@ -46,7 +50,9 @@ public:
     // Description: Add a new element to the heap.
     // Runtime: O(n)
     // TODO: When you implement this function, uncomment the parameter names.
-    virtual void push(const TYPE & /*val*/) {
+    virtual void push(const TYPE & val) {
+        auto index = std::lower_bound(data.begin(), data.end(), val, this->compare);
+        data.emplace(index, val);
         // TODO: Implement this function
     } // push()
 
@@ -58,6 +64,8 @@ public:
     // familiar with them, you do not need to use exceptions in this project.
     // Runtime: Amortized O(1)
     virtual void pop() {
+        auto last = --data.end();
+        data.erase(last);
         // TODO: Implement this function
     } // pop()
 
@@ -68,11 +76,8 @@ public:
     //              might make it no longer be the most extreme element.
     // Runtime: O(1)
     virtual const TYPE & top() const {
-        // TODO: Implement this function
-
-        // These lines are present only so that this provided file compiles.
-        static TYPE temp; // TODO: Delete this line
-        return temp;      // TODO: Delete or change this line
+        auto last = data.rbegin();
+        return *last;
     } // top()
 
 
@@ -96,6 +101,7 @@ public:
     //              'rebuilds' the heap by fixing the heap invariant.
     // Runtime: O(n log n)
     virtual void updatePriorities() {
+        std::sort(data.begin(), data.end(), this->compare);
         // TODO: Implement this function
     } // updatePriorities()
 

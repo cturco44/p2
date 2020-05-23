@@ -53,15 +53,14 @@ void testHiddenData(const string &pqType) {
         int data;
     };
     struct HiddenDataComp {
-        bool operator()(const HiddenData &/*a*/, const HiddenData &/*b*/) const {
+        bool operator()(const HiddenData &a, const HiddenData &b) const {
+            return a.data < b.data;
             // TODO: Finish this functor; when you do, uncomment the
             // parameters in the line above
-            return false;
         }
     };
 
     cout << "Testing " << pqType << " with hidden data" << endl;
-
     // TODO: Add code here to actually test with the HiddenData type.
 } // testHiddenData()
 
