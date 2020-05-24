@@ -15,6 +15,7 @@
 #include <cassert>
 #include <string>
 #include "BinaryPQ.h"
+#include "PairingPQ.h"
 
 using namespace std;
 struct HiddenData {
@@ -183,6 +184,7 @@ void test_update_priorities() {
         }
         
 }
+
 int main() {
     test_sorted_constructor();
     test_sorted_push();
