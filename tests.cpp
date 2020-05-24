@@ -38,7 +38,7 @@ class IntPtrs {
 };
 struct IntPtrsComp {
     bool operator()(const IntPtrs &a, const IntPtrs &b) const {
-        return a.the_ptr < b.the_ptr;
+        return *(a.the_ptr) < *(b.the_ptr);
         // TODO: Finish this functor; when you do, uncomment the
         // parameters in the line above
     }
@@ -182,6 +182,9 @@ void test_update_priorities() {
             correct.pop();
         
         }
+    assert(test.size() == 0);
+    assert(test.empty());
+    assert(correct.empty());
         
 }
 void test_paired_push_pop() {
@@ -263,7 +266,7 @@ void test_destructor() {
 }
 
 void test_custom_functor_paired() {
-    BinaryPQ<IntPtrs, IntPtrsComp> test;
+    PairingPQ<IntPtrs, IntPtrsComp> test;
     UnorderedFastPQ<IntPtrs, IntPtrsComp> correct;
     vector<int> v = {25, 18, 77, 16, 88, 47, 89, 84, 272, 394, 98, 36, 2, -7};
     for(int i = 0; i < (int)v.size(); ++i) {
@@ -280,6 +283,7 @@ void test_custom_functor_paired() {
         }
     
     }
+    
     test.updatePriorities();
     correct.updatePriorities();
     assert(test.size() == 14);
@@ -312,6 +316,17 @@ void test_update_elt() {
     assert(pq.size() == 0);
 
 }
+void infinite_loop_check() {
+    PairingPQ<int> pq;
+    auto topper = pq.addNode(200);
+    pq.addNode(7);
+    assert(pq.top() == 200);
+    pq.updateElt(topper, 300);
+}
+void update1() {
+    PairingPQ<int> pq;
+    pq.updatePriorities();
+}
 
 int main() {
     test_sorted_constructor();
@@ -328,6 +343,8 @@ int main() {
     test_assignment_operator2();
     test_custom_functor_paired();
     test_update_elt();
+    update1();
+    infinite_loop_check();
     cout << "Tests Successful" << endl;
 }
 

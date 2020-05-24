@@ -113,6 +113,7 @@ public:
     // Runtime: O(n)
     virtual void updatePriorities() {
         std::deque<Node*> holder;
+        tree_size = 0;
 
         if(root) {
             holder.push_back(root);
@@ -226,6 +227,9 @@ public:
         node->elt = new_value;
         Node* dad = node->prev;
         Node* son = node;
+//        if(node == root) {
+//            return;
+//        }
         while(!ready) {
             if(dad->child) {
                 if(dad->child == son) {
