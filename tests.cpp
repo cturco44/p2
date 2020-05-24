@@ -184,6 +184,134 @@ void test_update_priorities() {
         }
         
 }
+void test_paired_push_pop() {
+        vector<int> v = {25, 18, 77, 16};
+        PairingPQ<int> sorted;
+        sorted.push(v[0]);
+        sorted.push(v[1]);
+        sorted.push(v[2]);
+        sorted.push(v[3]);
+        UnorderedFastPQ<int> correct(v.begin(), v.end());
+        for(size_t i = 0; i < v.size(); ++i) {
+            assert(sorted.top() == correct.top());
+            sorted.pop();
+            correct.pop();
+        }
+        
+    
+}
+void test_paired_iterators() {
+    vector<int> v = {25, 18, 77, 16};
+    PairingPQ<int> sorted(v.begin(), v.end());
+    UnorderedFastPQ<int> correct(v.begin(), v.end());
+    for(size_t i = 0; i < v.size(); ++i) {
+        assert(sorted.top() == correct.top());
+        sorted.pop();
+        correct.pop();
+    }
+}
+void test_paired_copy_constructor() {
+    vector<int> v = {25, 18, 77, 16};
+    PairingPQ<int> sorted(v.begin(), v.end());
+    
+    
+    PairingPQ<int> tester(sorted);
+    assert(tester.size() == sorted.size());
+    for(size_t i = 0; i < v.size(); ++i) {
+        assert(sorted.top() == tester.top());
+        sorted.pop();
+        tester.pop();
+    }
+}
+void test_assignment_operator() {
+    vector<int> v = {25, 18, 77, 16};
+    PairingPQ<int> sorted(v.begin(), v.end());
+    
+    vector<int> t = {33,17};
+    
+    PairingPQ<int> tester(t.begin(), t.end());
+    tester = sorted;
+    assert(tester.size() == sorted.size());
+    for(size_t i = 0; i < v.size(); ++i) {
+        assert(sorted.top() == tester.top());
+        sorted.pop();
+        tester.pop();
+    }
+}
+void test_assignment_operator2() {
+    vector<int> v = {25, 18, 77, 16};
+    PairingPQ<int> sorted(v.begin(), v.end());
+    
+    
+    
+    PairingPQ<int> tester;
+    PairingPQ<int> empty2;
+    tester = sorted;
+    sorted = empty2;
+    
+    assert(tester.size() == 4);
+    assert(sorted.size() == 0);
+    assert(sorted.empty());
+
+}
+void test_destructor() {
+    vector<int> v = {25, 18, 77, 16};
+    PairingPQ<int> sorted(v.begin(), v.end());
+    
+    PairingPQ<int> tester;
+    
+}
+
+void test_custom_functor_paired() {
+    BinaryPQ<IntPtrs, IntPtrsComp> test;
+    UnorderedFastPQ<IntPtrs, IntPtrsComp> correct;
+    vector<int> v = {25, 18, 77, 16, 88, 47, 89, 84, 272, 394, 98, 36, 2, -7};
+    for(int i = 0; i < (int)v.size(); ++i) {
+        int* ptr = &v[i];
+        IntPtrs itptr(ptr);
+        test.push(itptr);
+        correct.push(itptr);
+        
+        if(v[i] == 77) {
+            *(itptr.the_ptr) = 400;
+        }
+        if(v[i] == 272) {
+            *(itptr.the_ptr) = -3;
+        }
+    
+    }
+    test.updatePriorities();
+    correct.updatePriorities();
+    assert(test.size() == 14);
+    
+    for(int i = 0; i < 14; ++i) {
+        IntPtrs ptrtest = test.top();
+        IntPtrs ptrcorrect = correct.top();
+        assert(*(ptrtest.the_ptr) == *(ptrcorrect.the_ptr));
+        test.pop();
+        correct.pop();
+    
+    }
+}
+void test_update_elt() {
+    PairingPQ<int> pq;
+    pq.addNode(10);
+    pq.addNode(9);
+    auto mid = pq.addNode(8);
+    pq.addNode(7);
+    pq.updateElt(mid, 20);
+    assert(pq.top() == 20);
+    
+    pq.pop();
+    assert(pq.top() == 10);
+    pq.pop();
+    assert(pq.top() == 9);
+    pq.pop();
+    assert(pq.top() == 7);
+    pq.pop();
+    assert(pq.size() == 0);
+
+}
 
 int main() {
     test_sorted_constructor();
@@ -193,6 +321,13 @@ int main() {
     test_update_priorities();
         test_custom_functor();
         test_mess_up_queue();
+    test_paired_push_pop();
+    test_paired_iterators();
+    test_paired_copy_constructor();
+    test_assignment_operator();
+    test_assignment_operator2();
+    test_custom_functor_paired();
+    test_update_elt();
     cout << "Tests Successful" << endl;
 }
 

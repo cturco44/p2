@@ -58,8 +58,11 @@ public:
     // Runtime: O(n) where n is number of elements in range.
     // TODO: when you implement this function, uncomment the parameter names.
     template<typename InputIterator>
-    PairingPQ(InputIterator /*start*/, InputIterator /*end*/, COMP_FUNCTOR comp = COMP_FUNCTOR()) :
+    PairingPQ(InputIterator start, InputIterator end, COMP_FUNCTOR comp = COMP_FUNCTOR()) :
         BaseClass{ comp }, root {nullptr}, tree_size{0} {
+            for(auto it = start; it != end; ++it) {
+                push(*it);
+            }
         // TODO: Implement this function.
     } // PairingPQ()
 
@@ -67,7 +70,7 @@ public:
     // Description: Copy constructor.
     // Runtime: O(n)
     PairingPQ(const PairingPQ& other) :
-        BaseClass{ other.compare } {
+        BaseClass{ other.compare }, root{nullptr}, tree_size{0} {
             copy_helper(other.root);
         // TODO: Implement this function.
     } // PairingPQ()
@@ -80,7 +83,10 @@ public:
         if(this == &rhs) {
             return *this;
         }
-        delete_helper();
+        if(tree_size > 0) {
+            delete_helper();
+        }
+        
         tree_size = 0;
         copy_helper(rhs.root);
         
@@ -94,7 +100,10 @@ public:
     // Description: Destructor
     // Runtime: O(n)
     ~PairingPQ() {
-        delete_helper();
+        if(tree_size > 0) {
+            delete_helper();
+        }
+        
         // TODO: Implement this function.
     } // ~PairingPQ()
 
@@ -104,10 +113,7 @@ public:
     // Runtime: O(n)
     virtual void updatePriorities() {
         std::deque<Node*> holder;
-        if(root->child) {
-            holder.push_back(root->child);
-            
-        }
+
         if(root) {
             holder.push_back(root);
         }
@@ -124,7 +130,7 @@ public:
                 holder.push_front(roots_child);
             }
             if(investigating) {
-                push(investigating->elts);
+                push(investigating->elt);
                 delete investigating;
                 holder.pop_back();
             }
@@ -142,12 +148,8 @@ public:
     // Runtime: O(1)
     // TODO: when you implement this function, uncomment the parameter names.
     virtual void push(const TYPE &val) {
-        ++tree_size;
-        if(!root) {
-            root = addNode(val);
-            return;
-        }
-        meld(root, addNode(val));
+        addNode(val);
+
         // TODO: Implement this function.
     } // push()
 
@@ -164,12 +166,16 @@ public:
         root = nullptr;
         
         std::deque<Node*> holder;
-        while(son->sibling) {
+        while(son) {
             holder.push_back(son);
             son = son->sibling;
         }
-        root = passover(holder);
         --tree_size;
+        if(!holder.empty()) {
+            root = passover(holder);
+        }
+        
+        
         // TODO: Implement this function.
     } // pop()
 
@@ -180,7 +186,7 @@ public:
     //              might make it no longer be the most extreme element.
     // Runtime: O(1)
     virtual const TYPE & top() const {
-        return root->elts;
+        return root->elt;
 
     } // top()
 
@@ -217,24 +223,28 @@ public:
     // TODO: when you implement this function, uncomment the parameter names.
     void updateElt(Node* node, const TYPE & new_value) {
         bool ready = false;
+        node->elt = new_value;
         Node* dad = node->prev;
+        Node* son = node;
         while(!ready) {
             if(dad->child) {
-                if(dad->child == node) {
+                if(dad->child == son) {
                     ready = true;
                 }
             }
             else {
                 dad = dad->prev;
+                son = son->prev;
             }
         }
-        Node* son = dad->child;
         dad->child = nullptr;
         std::deque<Node*> holder;
-        while(son->sibling) {
+        holder.push_back(dad);
+        while(son) {
             holder.push_back(son);
             son = son->sibling;
         }
+        root = passover(holder);
         
         // TODO: Implement this function
     } // updateElt()
@@ -250,6 +260,12 @@ public:
     //       updatePriorities().
     Node* addNode(const TYPE &val) {
         Node* added_node = new Node(val);
+        ++tree_size;
+        if(!root) {
+            root = added_node;
+            return added_node;
+        }
+        root = meld(root, added_node);
         return added_node;
         // TODO: Implement this function
     } // addNode()
@@ -263,7 +279,7 @@ private:
         //whatever should be on top set to alpha
         Node* alpha;
         Node* beta;
-        if(this->compare(lhs->elts, rhs->elts)) {
+        if(this->compare(lhs->elt, rhs->elt)) {
             alpha = rhs;
             beta = lhs;
         }
@@ -285,7 +301,10 @@ private:
         
         //set alpha's kid to beta's sibling
         beta->sibling = alphas_kid;
-        alphas_kid->prev = beta;
+        if(alphas_kid) {
+            alphas_kid->prev = beta;
+        }
+        
         
         return alpha;
         
@@ -294,11 +313,7 @@ private:
     void copy_helper(Node* root_in) {
         std::deque<Node*> holder;
         
-        if(root_in->child) {
-            holder.push_back(root->child);
-            
-        }
-        if(root) {
+        if(root_in) {
             holder.push_back(root_in);
         }
         while(!holder.empty()) {
@@ -312,17 +327,14 @@ private:
             if(roots_child) {
                 holder.push_front(roots_child);
             }
-            push(investigating->elts);
+            push(investigating->elt);
             holder.pop_back();
         }
         
     }
     void delete_helper() {
         std::deque<Node*> holder;
-        if(root->child) {
-            holder.push_back(root->child);
-            
-        }
+
         if(root) {
             holder.push_back(root);
         }
@@ -342,19 +354,22 @@ private:
         }
         root = nullptr;
     }
-    Node* passover(std::deque<Node*> &family) const {
+    Node* passover(std::deque<Node*> &family) {
         while(family.size() > 1) {
-            Node* first = family.pop_front();
-            Node* second = family.pop_front();
+            Node* first = family.front();
+            family.pop_front();
+            Node* second = family.front();
+            family.pop_front();
             
             first->sibling = nullptr;
             first->prev = nullptr;
             second->sibling = nullptr;
             second->prev = nullptr;
             
-            family.push_back(meld(first, second));
+            Node* temp = meld(first, second);
+            family.push_back(temp);
         }
-        return family.pop_front();
+        return family.front();
     }
 
         
