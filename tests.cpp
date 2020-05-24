@@ -327,7 +327,98 @@ void update1() {
     PairingPQ<int> pq;
     pq.updatePriorities();
 }
-
+void update_element_child() {
+    vector<int> v = {47, 68, 92, 33, 37};
+    PairingPQ<int> pq;
+    pq.addNode(68);
+    pq.addNode(92);
+    auto mid = pq.addNode(47);
+    pq.addNode(33);
+    pq.addNode(37);
+    pq.updateElt(mid, 69);
+    
+    assert(pq.top() == 92);
+    
+    pq.pop();
+    assert(pq.top() == 69);
+    pq.pop();
+    assert(pq.top() == 68);
+    pq.pop();
+    assert(pq.top() == 37);
+    pq.pop();
+    assert(pq.top() == 33);
+    pq.pop();
+    assert(pq.size() == 0);
+}
+void update_element_sibling() {
+    vector<int> v = {47, 68, 92, 33, 37};
+    PairingPQ<int> pq;
+    pq.addNode(47);
+    pq.addNode(92);
+    auto mid = pq.addNode(68);
+    pq.addNode(33);
+    pq.addNode(37);
+    pq.updateElt(mid, 72);
+    
+    assert(pq.top() == 92);
+    
+    pq.pop();
+    assert(pq.top() == 72);
+    pq.pop();
+    assert(pq.top() == 47);
+    pq.pop();
+    assert(pq.top() == 37);
+    pq.pop();
+    assert(pq.top() == 33);
+    pq.pop();
+    assert(pq.size() == 0);
+}
+void update_element_child2() {
+    vector<int> v = {47, 68, 92, 33, 37};
+    PairingPQ<int> pq;
+    pq.addNode(47);
+    pq.addNode(92);
+    auto mid = pq.addNode(37);
+    pq.addNode(33);
+    pq.addNode(68);
+    pq.updateElt(mid, 69);
+    
+    assert(pq.top() == 92);
+    
+    pq.pop();
+    assert(pq.top() == 69);
+    pq.pop();
+    assert(pq.top() == 68);
+    pq.pop();
+    assert(pq.top() == 47);
+    pq.pop();
+    assert(pq.top() == 33);
+    pq.pop();
+    assert(pq.size() == 0);
+}
+void update_element_child3() {
+    vector<int> v = {47, 68, 92, 33, 37};
+    PairingPQ<int> pq;
+    pq.addNode(47);
+    pq.addNode(92);
+    auto mid = pq.addNode(37);
+    pq.addNode(33);
+    pq.addNode(68);
+    pq.updateElt(mid, 105);
+    
+    assert(pq.top() == 105);
+    
+    pq.pop();
+    assert(pq.top() == 92);
+    pq.pop();
+    assert(pq.top() == 68);
+    pq.pop();
+    assert(pq.top() == 47);
+    pq.pop();
+    assert(pq.top() == 33);
+    pq.pop();
+    assert(pq.size() == 0);
+}
 int main() {
     test_sorted_constructor();
     test_sorted_push();
@@ -345,6 +436,10 @@ int main() {
     test_update_elt();
     update1();
     infinite_loop_check();
+    update_element_child();
+    update_element_sibling();
+    update_element_child2();
+    update_element_child3();
     cout << "Tests Successful" << endl;
 }
 

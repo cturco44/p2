@@ -227,9 +227,9 @@ public:
         node->elt = new_value;
         Node* dad = node->prev;
         Node* son = node;
-//        if(node == root) {
-//            return;
-//        }
+        if(node == root) {
+            return;
+        }
         while(!ready) {
             if(dad->child) {
                 if(dad->child == son) {
