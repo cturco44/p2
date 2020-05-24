@@ -7,3 +7,10 @@
 #  Copyright © 2020 Connor Turco. All rights reserved.
 
 g++ -std=c++1z -Wconversion -Wall -Werror -Wextra -pedantic  -g3 -DDEBUG tests.cpp -o tests_queue
+./tests_queue
+
+echo
+echo                           Valgrind Ya Bish
+echo =========================================================================
+valgrind ./tests_queue
+echo =========================================================================
