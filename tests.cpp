@@ -132,7 +132,7 @@ void test_custom_functor() {
         BinaryPQ<IntPtrs, IntPtrsComp> test;
         UnorderedFastPQ<IntPtrs, IntPtrsComp> correct;
         vector<int> v = {25, 18, 77, 16, 88, 47, 89, 84, 272, 394, 98, 36, 2, -7};
-        for(int i = 0; i < v.size(); ++i) {
+        for(int i = 0; i < (int)v.size(); ++i) {
             int* ptr = &v[i];
             IntPtrs itptr(ptr);
             test.push(itptr);
@@ -155,7 +155,7 @@ void test_update_priorities() {
         BinaryPQ<IntPtrs, IntPtrsComp> test;
         UnorderedFastPQ<IntPtrs, IntPtrsComp> correct;
         vector<int> v = {25, 18, 77, 16, 88, 47, 89, 84, 272, 394, 98, 36, 2, -7};
-        for(int i = 0; i < v.size(); ++i) {
+        for(int i = 0; i < (int)v.size(); ++i) {
             int* ptr = &v[i];
             IntPtrs itptr(ptr);
             test.push(itptr);
