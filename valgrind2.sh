@@ -10,7 +10,7 @@ g++ -std=c++1z -Wconversion -Wall -Werror -Wextra -pedantic  -g3 -DDEBUG tests.c
 ./tests_queue
 
 echo
-echo                           Valgrind Ya Bish
+echo                           Valgrind Output
 echo =========================================================================
 valgrind ./tests_queue
 echo =========================================================================
