@@ -250,10 +250,12 @@ public:
         }
         else {
             (node->prev)->sibling = node->sibling;
-            (node->sibling)->prev = node->prev;
+            if(node->sibling) {
+                (node->sibling)->prev = node->prev;
+            }
+            
         }
         node->sibling = nullptr;
-        node->child = nullptr;
         node->prev = nullptr;
         
         root = meld(root, node);

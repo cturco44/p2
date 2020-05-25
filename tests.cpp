@@ -529,8 +529,54 @@ void test_update_ints() {
         correct.pop();
     }
 }
+void test_update_elt_complicated() {
+    
+    PairingPQ<int> pq;
+    pq.addNode(13);
+    auto mid = pq.addNode(89);
+    pq.addNode(240);
+    pq.addNode(68);
+    pq.addNode(77);
+    pq.updateElt(mid, 105);
+    
+    assert(pq.top() == 240);
+    
+    pq.pop();
+    assert(pq.top() == 105);
+    pq.pop();
+    assert(pq.top() == 77);
+    pq.pop();
+    assert(pq.top() == 68);
+    pq.pop();
+    assert(pq.top() == 13);
+    pq.pop();
+    assert(pq.size() == 0);
 
+}
+void test_update_elt_complicated2() {
+    
+    PairingPQ<int> pq;
+    pq.addNode(13);
+    auto mid = pq.addNode(89);
+    pq.addNode(240);
+    pq.addNode(68);
+    pq.addNode(77);
+    pq.updateElt(mid, 300);
+    
+    assert(pq.top() == 300);
+    
+    pq.pop();
+    assert(pq.top() == 240);
+    pq.pop();
+    assert(pq.top() == 77);
+    pq.pop();
+    assert(pq.top() == 68);
+    pq.pop();
+    assert(pq.top() == 13);
+    pq.pop();
+    assert(pq.size() == 0);
 
+}
 int main() {
     test_sorted_constructor();
     test_sorted_push();
@@ -556,6 +602,8 @@ int main() {
     update_dynamic();
     test_update_ints();
     test_update_elt_child();
+    test_update_elt_complicated();
+    test_update_elt_complicated2();
     cout << "Tests Successful" << endl;
 }
 
