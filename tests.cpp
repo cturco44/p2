@@ -29,6 +29,13 @@ struct HiddenDataComp {
         // parameters in the line above
     }
 };
+struct PtrComp {
+    bool operator()(const int* a, const int* b) const {
+        return *a < *b;
+        // TODO: Finish this functor; when you do, uncomment the
+        // parameters in the line above
+    }
+};
 class IntPtrs {
     public:
         IntPtrs(int* ptr_in) {
@@ -419,6 +426,37 @@ void update_element_child3() {
     pq.pop();
     assert(pq.size() == 0);
 }
+void test_update_again() {
+    vector<int> v = {13, 77, 89, 90, -5, -22, 40, 14, 9, 7, 16};
+    vector<int*> ptr;
+    for(int i = 0; i < (int)v.size(); ++i) {
+        ptr.push_back(&v[i]);
+    }
+    PairingPQ<int*, PtrComp> pq(ptr.begin(), ptr.end());
+    UnorderedFastPQ<int*, PtrComp> correct(ptr.begin(), ptr.end());
+    int pq_top= *(pq.top());
+    int correct_top = *(correct.top());
+    assert(pq_top = correct_top);
+    v[2] = 107;
+    pq.updatePriorities();
+    correct.updatePriorities();
+    assert(pq.top() == correct.top());
+    assert(*(pq.top()) == 107);
+    
+    v[3] = 257;
+    v[6] = -700;
+    pq.updatePriorities();
+    correct.updatePriorities();
+    
+    assert(pq.size() == correct.size());
+    while(!pq.empty()) {
+        assert(pq.top() == correct.top());
+        pq.pop();
+        correct.pop();
+    }
+    
+}
+
 int main() {
     test_sorted_constructor();
     test_sorted_push();
@@ -440,6 +478,7 @@ int main() {
     update_element_sibling();
     update_element_child2();
     update_element_child3();
+    test_update_again();
     cout << "Tests Successful" << endl;
 }
 
