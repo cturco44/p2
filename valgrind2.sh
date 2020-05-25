@@ -12,5 +12,5 @@ g++ -std=c++1z -Wconversion -Wall -Werror -Wextra -pedantic  -g3 -DDEBUG tests.c
 echo
 echo                           Valgrind Output
 echo =========================================================================
-valgrind ./tests_queue
+valgrind -s ./tests_queue
 echo =========================================================================
