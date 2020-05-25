@@ -131,8 +131,17 @@ public:
                 holder.push_front(roots_child);
             }
             if(investigating) {
-                push(investigating->elt);
-                delete investigating;
+                ++tree_size;
+                investigating->child = nullptr;
+                investigating->prev = nullptr;
+                investigating->sibling = nullptr;
+                if(root == nullptr) {
+                    root = investigating;
+                }
+                else {
+                    root = meld(root, investigating);
+                }
+                
                 holder.pop_back();
             }
         }
@@ -223,32 +232,31 @@ public:
     // Runtime: As discussed in reading material.
     // TODO: when you implement this function, uncomment the parameter names.
     void updateElt(Node* node, const TYPE & new_value) {
-        bool ready = false;
         node->elt = new_value;
-        Node* dad = node->prev;
-        Node* son = node;
+        //If node is root
         if(node == root) {
             return;
         }
-        while(!ready) {
-            if(dad->child) {
-                if(dad->child == son) {
-                    ready = true;
-                }
-            }
-            else {
-                dad = dad->prev;
-                son = son->prev;
+        //is the previous node a parent or sibling node?
+        bool prev_parent = false;
+        
+        if((node->prev)->child) {
+            if((node->prev)->child == node) {
+                prev_parent = true;
             }
         }
-        dad->child = nullptr;
-        std::deque<Node*> holder;
-        holder.push_back(dad);
-        while(son) {
-            holder.push_back(son);
-            son = son->sibling;
+        if(prev_parent) {
+            (node->prev)->child = node->sibling;
         }
-        root = passover(holder);
+        else {
+            (node->prev)->sibling = node->sibling;
+            (node->sibling)->prev = node->prev;
+        }
+        node->sibling = nullptr;
+        node->child = nullptr;
+        node->prev = nullptr;
+        
+        root = meld(root, node);
         
         // TODO: Implement this function
     } // updateElt()

@@ -323,6 +323,24 @@ void test_update_elt() {
     assert(pq.size() == 0);
 
 }
+void test_update_elt_child() {
+    PairingPQ<int> pq;
+    pq.addNode(10);
+    pq.addNode(9);
+    pq.addNode(8);
+    auto mid = pq.addNode(7);
+    pq.updateElt(mid, 20);
+    
+    assert(pq.top() == 20);
+    pq.pop();
+    assert(pq.top() == 10);
+    pq.pop();
+    assert(pq.top() == 9);
+    pq.pop();
+    assert(pq.top() == 8);
+    pq.pop();
+    assert(pq.size() == 0);
+}
 void infinite_loop_check() {
     PairingPQ<int> pq;
     auto topper = pq.addNode(200);
@@ -537,6 +555,7 @@ int main() {
     test_update_again();
     update_dynamic();
     test_update_ints();
+    test_update_elt_child();
     cout << "Tests Successful" << endl;
 }
 
