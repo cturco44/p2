@@ -427,7 +427,7 @@ void update_element_child3() {
     assert(pq.size() == 0);
 }
 void test_update_again() {
-    vector<int> v = {13, 77, 89, 90, -5, -22, 40, 14, 9, 7, 16};
+    vector<int> v = {13, 77, 89, 90, -5, -22, 40, 14, 9, 7, 13};
     vector<int*> ptr;
     for(int i = 0; i < (int)v.size(); ++i) {
         ptr.push_back(&v[i]);
@@ -450,12 +450,68 @@ void test_update_again() {
     
     assert(pq.size() == correct.size());
     while(!pq.empty()) {
-        assert(pq.top() == correct.top());
+        int* pq_top2 = pq.top();
+        int* correct_top2 = correct.top();
+        assert(*pq_top2 == *correct_top2);
         pq.pop();
         correct.pop();
     }
     
 }
+void update_dynamic() {
+    vector<int> v = {13, 77, 89, 90, -5, -22, 40, 14, 9, 7, 13};
+    vector<int*> ptr;
+    for(int i = 0; i < (int)v.size(); ++i) {
+        ptr.push_back(&v[i]);
+    }
+    PairingPQ<int*, PtrComp> *pq = new PairingPQ<int*, PtrComp> (ptr.begin(), ptr.end());
+    UnorderedFastPQ<int*, PtrComp> correct(ptr.begin(), ptr.end());
+    int pq_top= *(pq->top());
+    int correct_top = *(correct.top());
+    assert(pq_top = correct_top);
+    v[2] = 107;
+    pq->updatePriorities();
+    correct.updatePriorities();
+    assert(pq->top() == correct.top());
+    assert(*(pq->top()) == 107);
+    
+    v[3] = 257;
+    v[6] = -700;
+    pq->updatePriorities();
+    correct.updatePriorities();
+    
+    assert(pq->size() == correct.size());
+    while(!pq->empty()) {
+        int* pq_top2 = pq->top();
+        int* correct_top2 = correct.top();
+        assert(*pq_top2 == *correct_top2);
+        pq->pop();
+        correct.pop();
+    }
+    delete pq;
+}
+void test_update_ints() {
+    vector<int> v = {13, 77, 89, 90, -5, -22, 40, 14, 9, 7, 13, 77, 89, 16, 42, 101, 15};
+
+    PairingPQ<int> pq(v.begin(), v.end());
+    UnorderedFastPQ<int> correct(v.begin(), v.end());
+    int pq_top= pq.top();
+    int correct_top = correct.top();
+    assert(pq_top = correct_top);
+   
+    pq.updatePriorities();
+    correct.updatePriorities();
+    
+    assert(pq.size() == correct.size());
+    while(!pq.empty()) {
+        int pq_top2 = pq.top();
+        int correct_top2 = correct.top();
+        assert(pq_top2 == correct_top2);
+        pq.pop();
+        correct.pop();
+    }
+}
+
 
 int main() {
     test_sorted_constructor();
@@ -479,6 +535,8 @@ int main() {
     update_element_child2();
     update_element_child3();
     test_update_again();
+    update_dynamic();
+    test_update_ints();
     cout << "Tests Successful" << endl;
 }
 
